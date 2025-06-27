@@ -8,9 +8,10 @@
       <MediaCard
         v-for="item in items"
         :key="item.id"
-        :rating="item.rating"
-        :image-src="item.imageSrc"
+        :id="item.id"
         :title="item.title"
+        :imageSrc="item.imageSrc"
+        :rating="item.rating"
         :year="item.year"
       />
     </div>
@@ -88,4 +89,4 @@ defineProps<Props>()
 .horizontal-scroll::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-</style> 
+</style>

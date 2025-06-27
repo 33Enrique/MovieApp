@@ -1,36 +1,23 @@
-import { ref, computed, type Ref } from 'vue'
+import { ref } from 'vue'
+import type { MediaItem } from '@/services/thetvdbService'
 
-// Se define una interfaz aquí para que pueda ser reutilizada
-export interface MediaItem {
-  id: string | number
-  rating: string | number
-  imageSrc: string
-  title: string
-  year: string | number
-}
-
-// Composable para manejar la búsqueda de items
-export function useSearch(
-  initialItems: Ref<MediaItem[]>
-) {
-  
+export function useSearch() {
   const searchQuery = ref('')
+  const searchResults = ref<MediaItem[]>([])
+  const isLoading = ref(false)
 
-  
-  const filteredItems = computed(() => {
- 
-    if (!searchQuery.value) {
-      return initialItems.value
-    }
-    
-    return initialItems.value.filter(item =>
-      item.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-    )
-  })
+  const search = async (query: string) => {
+    searchQuery.value = query
+    isLoading.value = true
+    const { searchTheTVDB } = await import('@/services/thetvdbService')
+    searchResults.value = await searchTheTVDB(query)
+    isLoading.value = false
+  }
 
-  
   return {
     searchQuery,
-    filteredItems
+    searchResults,
+    isLoading,
+    search,
   }
-} 
+}

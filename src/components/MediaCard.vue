@@ -1,21 +1,20 @@
 <template>
-  <div class="card">
-    <div class="rating">{{ rating }}</div>
-    <img :src="imageSrc" :alt="title">
-    <p>{{ title }}</p>
-    <span class="year">({{ year }})</span>
-  </div>
+  <router-link :to="`/details/${id}`" class="card">
+    <div class="rating">{{ '7.9' }}</div>
+    <img :src="imageSrc" :alt="title" />
+    <p class="title">{{ title }}</p>
+    <span class="year">2025</span>
+  </router-link>
 </template>
 
 <script setup lang="ts">
-interface Props {
+defineProps<{
+  id: string | number
   rating: string | number
   imageSrc: string
   title: string
   year: string | number
-}
-
-defineProps<Props>()
+}>()
 </script>
 
 <style scoped>
@@ -25,9 +24,14 @@ defineProps<Props>()
   margin-right: 15px;
   border-radius: 8px;
   overflow: hidden;
+  background-color: #2c2c44;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
-  background-color: #2c2c44; 
 }
 
 .card:hover {
@@ -44,6 +48,7 @@ defineProps<Props>()
   border-radius: 4px;
   font-size: 12px;
   font-weight: bold;
+  z-index: 2;
 }
 
 .card img {
@@ -52,7 +57,7 @@ defineProps<Props>()
   object-fit: cover;
 }
 
-.card p {
+.title {
   margin: 8px 10px 4px 10px;
   font-weight: 500;
   font-size: 14px;
@@ -67,7 +72,6 @@ defineProps<Props>()
   padding: 0 10px 10px 10px;
 }
 
-/* Mediasss Queries para Responsividad */
 @media (min-width: 768px) {
   .card {
     min-width: 180px;
@@ -85,4 +89,4 @@ defineProps<Props>()
     height: 280px;
   }
 }
-</style> 
+</style>
