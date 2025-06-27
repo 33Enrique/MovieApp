@@ -1,14 +1,47 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useMyShowsStore } from '@/stores/myShows'
 import { useRouter } from 'vue-router'
+import MediaCard from '@/components/MediaCard.vue'
+import { batchSearchTheTVDBExact, type MediaItem } from '@/services/thetvdbService'
 
 const userId = 'user123' // Simulación de usuario
 const store = useMyShowsStore()
 const router = useRouter()
 
-onMounted(() => {
-  store.fetchLists(userId)
+const recommendedMovies = ref<MediaItem[]>([])
+const popularSeries = ref<MediaItem[]>([])
+
+onMounted(async () => {
+  await store.fetchLists(userId)
+  recommendedMovies.value = await batchSearchTheTVDBExact([
+    'Interstellar',
+    'Joker',
+    'Batman',
+    'Mugen Train',
+    'Ted',
+    'Project X',
+    'Spider Man',
+    'Venom',
+    'Rango',
+    'Scarface',
+    'World War Z',
+    'Ted 2',
+  ])
+  popularSeries.value = await batchSearchTheTVDBExact([
+    'Breaking Bad',
+    'Blue Lock',
+    'The Last of Us',
+    'Hunter x Hunter',
+    'You',
+    'Solo leveling',
+    'Wednesday',
+    'Death Note',
+    'Servant',
+    'Cobra Kai',
+    'Chernobyl',
+    'Tokyo Ghoul',
+  ])
 })
 </script>
 
@@ -35,16 +68,31 @@ onMounted(() => {
         <span class="count">{{ store.favorites.length }}</span>
       </div>
     </div>
-    <div class="section-title">Watchlist</div>
-    <div class="shows-list">
-      <div v-if="store.loading">Loading...</div>
-      <div v-else-if="store.watchlist.length === 0">No shows in watchlist.</div>
-      <div v-else class="cards">
-        <div v-for="id in store.watchlist" :key="id" class="show-card">
-          <!-- Aquí luego se puede mostrar más info del show -->
-          <span>{{ id }}</span>
-        </div>
-      </div>
+    <div class="section-title">Recommended movies</div>
+    <div class="shows-list cards">
+      <MediaCard
+        v-for="show in recommendedMovies"
+        :key="show.id"
+        :id="show.id"
+        :title="show.title"
+        :rating="show.rating"
+        :imageSrc="show.imageSrc"
+        :year="show.year"
+        :type="show.type"
+      />
+    </div>
+    <div class="section-title">Popular TV series</div>
+    <div class="shows-list cards">
+      <MediaCard
+        v-for="show in popularSeries"
+        :key="show.id"
+        :id="show.id"
+        :title="show.title"
+        :rating="show.rating"
+        :imageSrc="show.imageSrc"
+        :year="show.year"
+        :type="show.type"
+      />
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`/details/${id}`" class="card">
+  <router-link :to="`/details/${type}/${id}`" class="card">
     <div class="rating">{{ '7.9' }}</div>
     <img :src="imageSrc" :alt="title" />
     <p class="title">{{ title }}</p>
@@ -14,6 +14,7 @@ defineProps<{
   imageSrc: string
   title: string
   year: string | number
+  type: 'series' | 'movie'
 }>()
 </script>
 

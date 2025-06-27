@@ -13,6 +13,7 @@
         :imageSrc="item.imageSrc"
         :rating="item.rating"
         :year="item.year"
+        :type="item.type"
       />
     </div>
   </section>
@@ -27,6 +28,7 @@ interface MediaItem {
   imageSrc: string
   title: string
   year: string | number
+  type: 'series' | 'movie'
 }
 
 interface Props {

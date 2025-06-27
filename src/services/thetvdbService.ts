@@ -4,6 +4,7 @@ export interface MediaItem {
   imageSrc: string
   title: string
   year: string | number
+  type: 'series' | 'movie'
 }
 
 export async function searchTheTVDB(query: string): Promise<MediaItem[]> {
@@ -34,6 +35,7 @@ export async function searchTheTVDB(query: string): Promise<MediaItem[]> {
         rating: item.score?.toFixed(1) ?? '7.9',
         imageSrc: item.image_url || '/images/placeholder.jpg',
         year: item.firstAired?.split('-')[1] ?? '2025',
+        type: item.objectType === 'movie' ? 'movie' : 'series',
       }))
   } catch (error) {
     console.error('Error en searchTheTVDB:', error)
@@ -41,18 +43,14 @@ export async function searchTheTVDB(query: string): Promise<MediaItem[]> {
   }
 }
 
-export async function getShowDetails(id: string): Promise<any> {
+export async function getShowDetails(id: string, type: 'series' | 'movie' = 'series'): Promise<any> {
   try {
-    const tokenRes = await fetch('http://localhost:3001/api/thetvdb/token')
-    const { token } = await tokenRes.json()
-
-    const res = await fetch(`https://api4.thetvdb.com/v4/series/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const res = await fetch(`http://localhost:3001/api/content/${type}/${id}`)
+    if (!res.ok) {
+      throw new Error('No encontrado en backend')
+    }
     const data = await res.json()
-    return data.data
+    return data
   } catch (error) {
     console.error('Error al obtener detalles del show:', error)
     return null
@@ -78,6 +76,7 @@ export async function batchSearchTheTVDBExact(titles: string[]): Promise<MediaIt
                 rating: first.score?.toFixed(1) ?? '7.9',
                 imageSrc: first.image_url || '/images/placeholder.jpg',
                 year: first.firstAired?.split('-')[0] ?? '2025',
+                type: first.objectType === 'movie' ? 'movie' : 'series',
               }
             : null
         })
