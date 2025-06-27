@@ -15,6 +15,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 interface NavItem {
   id: string
@@ -59,12 +60,17 @@ const emit = defineEmits<{
   navChange: [itemId: string]
 }>()
 
+const router = useRouter()
+
 const handleNavClick = (itemId: string) => {
-  
   navItems.value.forEach(item => {
     item.isActive = item.id === itemId
   })
- 
+  if (itemId === 'shows') {
+    router.push('/myshows')
+  } else if (itemId === 'explore') {
+    router.push('/')
+  }
   emit('navChange', itemId)
 }
 </script>
