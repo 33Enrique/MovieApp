@@ -11,7 +11,7 @@ export const useMyShowsStore = defineStore('myShows', () => {
   async function fetchLists(userId: string) {
     loading.value = true
     try {
-      const res = await fetch(`http://localhost:3001/api/user-content/${userId}`)
+      const res = await fetch(`http://localhost:3002/api/user-content/${userId}`)
       const data = await res.json()
       watchlist.value = data.watchlist || []
       watched.value = data.watched || []
@@ -27,7 +27,7 @@ export const useMyShowsStore = defineStore('myShows', () => {
 
   // Agregar show a una lista
   async function addToList(userId: string, contentId: string, status: string) {
-    await fetch('http://localhost:3001/api/user-content', {
+    await fetch('http://localhost:3002/api/user-content', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, contentId, status })
@@ -37,7 +37,7 @@ export const useMyShowsStore = defineStore('myShows', () => {
 
   // Eliminar show de una lista
   async function removeFromList(userId: string, contentId: string, status: string) {
-    await fetch('http://localhost:3001/api/user-content', {
+    await fetch('http://localhost:3002/api/user-content', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, contentId, status })

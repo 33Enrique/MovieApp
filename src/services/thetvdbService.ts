@@ -9,7 +9,7 @@ export interface MediaItem {
 
 export async function searchTheTVDB(query: string): Promise<MediaItem[]> {
   try {
-    const tokenRes = await fetch('http://localhost:3001/api/thetvdb/token')
+    const tokenRes = await fetch('http://localhost:3002/api/thetvdb/token')
     const { token } = await tokenRes.json()
 
     const searchRes = await fetch(
@@ -45,7 +45,7 @@ export async function searchTheTVDB(query: string): Promise<MediaItem[]> {
 
 export async function getShowDetails(id: string, type: 'series' | 'movie' = 'series'): Promise<any> {
   try {
-    const res = await fetch(`http://localhost:3001/api/content/${type}/${id}`)
+    const res = await fetch(`http://localhost:3002/api/content/${type}/${id}`)
     if (!res.ok) {
       throw new Error('No encontrado en backend')
     }
@@ -59,7 +59,7 @@ export async function getShowDetails(id: string, type: 'series' | 'movie' = 'ser
 
 export async function batchSearchTheTVDBExact(titles: string[]): Promise<MediaItem[]> {
   try {
-    const tokenRes = await fetch('http://localhost:3001/api/thetvdb/token')
+    const tokenRes = await fetch('http://localhost:3002/api/thetvdb/token')
     const { token } = await tokenRes.json()
 
     const fetches = titles.map((title) =>

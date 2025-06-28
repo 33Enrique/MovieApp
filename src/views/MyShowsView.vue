@@ -3,14 +3,16 @@ import { onMounted, ref, watch } from 'vue'
 import { useMyShowsStore } from '@/stores/myShows'
 import { useRouter } from 'vue-router'
 import MediaCard from '@/components/MediaCard.vue'
-import { batchSearchTheTVDBExact, type MediaItem } from '@/services/thetvdbService'
+import { batchSearchTheTVDBExact, type MediaItem, getShowDetails } from '@/services/thetvdbService'
 
-const userId = 'user123' // Simulación de usuario
+const userId = '14' // Usuario real existente en la base de datos
 const store = useMyShowsStore()
 const router = useRouter()
 
 const recommendedMovies = ref<MediaItem[]>([])
 const popularSeries = ref<MediaItem[]>([])
+const watchlistDetails = ref<MediaItem[]>([])
+const showWatchlist = ref(false)
 
 onMounted(async () => {
   await store.fetchLists(userId)
@@ -43,6 +45,29 @@ onMounted(async () => {
     'Tokyo Ghoul',
   ])
 })
+
+watch(
+  () => store.watchlist,
+  async (ids) => {
+    // Limpiar antes de cargar
+    watchlistDetails.value = []
+    for (const id of ids) {
+      // Por defecto asumimos 'series', puedes mejorar esto si guardas el tipo
+      const details = await getShowDetails(String(id), 'series')
+      if (details) {
+        watchlistDetails.value.push({
+          id: details.id,
+          title: details.name,
+          rating: details.score ?? '7.9',
+          imageSrc: details.image || '/images/placeholder.jpg',
+          year: details.year || '',
+          type: details.recordType || 'series',
+        })
+      }
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -55,7 +80,7 @@ onMounted(async () => {
       <button>Movies</button>
     </div>
     <div class="lists-summary">
-      <div class="list-item">
+      <div class="list-item" @click="showWatchlist = !showWatchlist" style="cursor:pointer;">
         <span>Watchlist</span>
         <span class="count">{{ store.watchlist.length }}</span>
       </div>
@@ -93,6 +118,21 @@ onMounted(async () => {
         :year="show.year"
         :type="show.type"
       />
+    </div>
+    <div v-if="showWatchlist">
+      <div class="section-title">My Watchlist</div>
+      <div class="shows-list cards">
+        <MediaCard
+          v-for="show in watchlistDetails"
+          :key="show.id"
+          :id="show.id"
+          :title="show.title"
+          :rating="show.rating"
+          :imageSrc="show.imageSrc"
+          :year="show.year"
+          :type="show.type"
+        />
+      </div>
     </div>
   </div>
 </template>

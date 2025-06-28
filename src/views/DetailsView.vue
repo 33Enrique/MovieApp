@@ -10,7 +10,7 @@ const type = (route.params.type as 'series' | 'movie') || 'series'
 const showId = rawId.replace(/^[^\d]*(\d+)$/, '$1')
 console.log('DetallesView - rawId:', rawId, 'showId:', showId, 'type:', type)
 const show = ref<any>(null)
-const userId = 'user123'
+const userId = 14
 const store = useMyShowsStore()
 
 const loading = ref(true)
@@ -18,9 +18,12 @@ const loading = ref(true)
 onMounted(async () => {
   loading.value = true
   console.log('Llamando getShowDetails con showId:', showId, 'type:', type)
-  show.value = await getShowDetails(showId, type)
+  show.value = await getShowDetails(String(showId), type)
   console.log('Respuesta de getShowDetails:', show.value)
-  await store.fetchLists(userId)
+  await store.fetchLists(String(userId))
+  console.log('IDs en watchlist:', store.watchlist)
+  console.log('IDs en watched:', store.watched)
+  console.log('IDs en favorites:', store.favorites)
   loading.value = false
 })
 
@@ -31,21 +34,21 @@ const inFavorites = computed(() => store.favorites.includes(showId))
 const toggleList = async (status: string) => {
   if (status === 'watchlist') {
     if (inWatchlist.value) {
-      await store.removeFromList(userId, showId, 'watchlist')
+      await store.removeFromList(String(userId), String(showId), 'watchlist')
     } else {
-      await store.addToList(userId, showId, 'watchlist')
+      await store.addToList(String(userId), String(showId), 'watchlist')
     }
   } else if (status === 'watched') {
     if (inWatched.value) {
-      await store.removeFromList(userId, showId, 'watched')
+      await store.removeFromList(String(userId), String(showId), 'watched')
     } else {
-      await store.addToList(userId, showId, 'watched')
+      await store.addToList(String(userId), String(showId), 'watched')
     }
   } else if (status === 'favorites') {
     if (inFavorites.value) {
-      await store.removeFromList(userId, showId, 'favorites')
+      await store.removeFromList(String(userId), String(showId), 'favorites')
     } else {
-      await store.addToList(userId, showId, 'favorites')
+      await store.addToList(String(userId), String(showId), 'favorites')
     }
   }
 }
