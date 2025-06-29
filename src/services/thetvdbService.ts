@@ -43,14 +43,34 @@ export async function searchTheTVDB(query: string): Promise<MediaItem[]> {
   }
 }
 
-export async function getShowDetails(id: string, type: 'series' | 'movie' = 'series'): Promise<any> {
+export async function getShowDetails(
+  id: string,
+  type: 'series' | 'movie' = 'series',
+): Promise<any> {
   try {
     const res = await fetch(`http://localhost:3002/api/content/${type}/${id}`)
     if (!res.ok) {
       throw new Error('No encontrado en backend')
     }
     const data = await res.json()
-    return data
+    const image_url = data.image_url || data.image || '/images/placeholder.jpg'
+    const genres = data.genres?.map((g: any) => g.name) || []
+    const creators = data.people?.directors?.map((d: any) => d.name) || []
+    //Normalizamos los datos de entrada para poder mostrarlos
+    return {
+      id: data.id,
+      name: data.name,
+      overview: data.overview || 'Sin descripción disponible',
+      genres: genres.length ? genres : ['Drama', 'Sci-Fi'],
+      status: data.status?.name || 'Released',
+      runtime: data.runtime || data.averageRuntime || '??',
+      firstAired: data.firstAired || '2025-01-01',
+      year: data.year ? String(data.year) : '2025',
+      image_url,
+      imdb_id: data.remoteIds?.find((r: any) => r.sourceName === 'imdb')?.id ?? null,
+      siteRating: '7.9', //Quemado ya que la API no cuenta con info acerca de los ratings para el contenido en general
+      creators,
+    }
   } catch (error) {
     console.error('Error al obtener detalles del show:', error)
     return null
