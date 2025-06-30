@@ -15,6 +15,8 @@ const userId = 14
 const store = useMyShowsStore()
 const loading = ref(true)
 
+const animatingStatus = ref<string | null>(null)
+
 onMounted(async () => {
   loading.value = true
   show.value = await getShowDetails(String(showId), type)
@@ -40,6 +42,11 @@ const toggleList = async (status: string) => {
       ? await store.removeFromList(String(userId), String(showId), 'favorites')
       : await store.addToList(String(userId), String(showId), 'favorites')
   }
+
+  animatingStatus.value = status
+  setTimeout(() => {
+    animatingStatus.value = null
+  }, 600)
 }
 </script>
 
@@ -68,20 +75,29 @@ const toggleList = async (status: string) => {
     </div>
     <button class="start-btn">Start watching</button>
     <div class="actions-bar">
-      <button :class="['action-btn', { active: inWatchlist }]" @click="toggleList('watchlist')">
+      <button
+        :class="['action-btn', { active: inWatchlist, animate: animatingStatus === 'watchlist' }]"
+        @click="toggleList('watchlist')"
+      >
         <span v-if="inWatchlist">✔</span>
         <span v-else>＋</span>
-        Add to watchlist
+        Watchlist
       </button>
-      <button :class="['action-btn', { active: inWatched }]" @click="toggleList('watched')">
+      <button
+        :class="['action-btn', { active: inWatched, animate: animatingStatus === 'watched' }]"
+        @click="toggleList('watched')"
+      >
         <span v-if="inWatched">✔</span>
         <span v-else>＋</span>
-        Mark as watched
+        Watched
       </button>
-      <button :class="['action-btn', { active: inFavorites }]" @click="toggleList('favorites')">
+      <button
+        :class="['action-btn', { active: inFavorites, animate: animatingStatus === 'favorites' }]"
+        @click="toggleList('favorites')"
+      >
         <span v-if="inFavorites">★</span>
         <span v-else>☆</span>
-        Add to favorites
+        Favorites
       </button>
     </div>
   </div>
@@ -197,7 +213,7 @@ const toggleList = async (status: string) => {
   gap: 4px;
   transition:
     background 0.2s,
-    color 0.2s;
+    transform 0.2s;
 }
 
 .action-btn.active {
@@ -205,8 +221,24 @@ const toggleList = async (status: string) => {
   color: #fff;
 }
 
+.action-btn.animate {
+  animation: pulse 0.2s;
+}
+
 .action-btn span {
   font-size: 18px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @media (max-width: 600px) {
