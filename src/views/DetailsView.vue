@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getShowDetails } from '@/services/thetvdbService'
 import { useMyShowsStore } from '@/stores/myShows'
 
 const route = useRoute()
+const router = useRouter()
 const rawId = route.params.id as string
 const [typePrefix, idStr] = rawId.split('-')
 const type = typePrefix === 'movie' ? 'movie' : 'series'
@@ -48,6 +49,10 @@ const toggleList = async (status: string) => {
     animatingStatus.value = null
   }, 600)
 }
+
+const goToWatch = () => {
+  router.push(`/watch/${type}-${showId}`)
+}
 </script>
 
 <template>
@@ -73,7 +78,7 @@ const toggleList = async (status: string) => {
         >Creators: <b>{{ show.creators.join(', ') }}</b></span
       >
     </div>
-    <button class="start-btn">Start watching</button>
+    <button class="start-btn" @click="goToWatch">Start watching</button>
     <div class="actions-bar">
       <button
         :class="['action-btn', { active: inWatchlist, animate: animatingStatus === 'watchlist' }]"
