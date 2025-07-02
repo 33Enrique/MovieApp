@@ -60,8 +60,8 @@ onMounted(async () => {
       :items="searchResults"
     />
     <template v-else>
-      <MediaSection title="Recommended movies" :items="recommendedMovies" />
-      <MediaSection title="Popular TV series" :items="popularSeries" />
+      <MediaSection title="Recommended movies" :items="recommendedMovies" :infinite="true" />
+      <MediaSection title="Popular TV series" :items="popularSeries" :infinite="true" />
     </template>
   </div>
 </template>

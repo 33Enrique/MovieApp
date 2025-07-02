@@ -28,47 +28,60 @@ onMounted(async () => {
   favoritesDetails.value = []
 
   // Watchlist
-  for (const id of store.watchlist) {
-    const details = await getShowDetails(String(id), 'series')
-    if (details) {
-      watchlistDetails.value.push({
-        id: details.id,
-        title: details.name,
-        rating: details.score ?? '7.9',
-        imageSrc: details.image || '/images/placeholder.jpg',
-        year: details.year || '',
-        type: details.type || 'series',
-      })
+
+  const idsWatchlist = new Set()
+  for (const item of store.watchlist) {
+    if (!idsWatchlist.has(item.content_id)) {
+      const details = await getShowDetails(String(item.content_id), item.type as 'series' | 'movie')
+      if (details) {
+        watchlistDetails.value.push({
+          id: details.id,
+          title: details.name,
+          rating: details.score ?? '7.9',
+          imageSrc: details.image_url || '/images/placeholder.jpg',
+          year: details.year || '',
+          type: details.type || 'series',
+        })
+        idsWatchlist.add(item.content_id)
+      }
     }
   }
 
   // Watched
-  for (const id of store.watched) {
-    const details = await getShowDetails(String(id), 'series')
-    if (details) {
-      watchedDetails.value.push({
-        id: details.id,
-        title: details.name,
-        rating: details.score ?? '7.9',
-        imageSrc: details.image || '/images/placeholder.jpg',
-        year: details.year || '',
-        type: details.type || 'series',
-      })
+  const idsWatched = new Set()
+  for (const item of store.watched) {
+    if (!idsWatched.has(item.content_id)) {
+      const details = await getShowDetails(String(item.content_id), item.type as 'series' | 'movie')
+      if (details) {
+        watchedDetails.value.push({
+          id: details.id,
+          title: details.name,
+          rating: details.score ?? '7.9',
+          imageSrc: details.image_url || '/images/placeholder.jpg',
+          year: details.year || '',
+          type: details.type || 'series',
+        })
+        idsWatched.add(item.content_id)
+      }
     }
   }
 
   // Favorites
-  for (const id of store.favorites) {
-    const details = await getShowDetails(String(id), 'series')
-    if (details) {
-      favoritesDetails.value.push({
-        id: details.id,
-        title: details.name,
-        rating: details.score ?? '7.9',
-        imageSrc: details.image || '/images/placeholder.jpg',
-        year: details.year || '',
-        type: details.type || 'series',
-      })
+  const idsFavorites = new Set()
+  for (const item of store.favorites) {
+    if (!idsFavorites.has(item.content_id)) {
+      const details = await getShowDetails(String(item.content_id), item.type as 'series' | 'movie')
+      if (details) {
+        favoritesDetails.value.push({
+          id: details.id,
+          title: details.name,
+          rating: details.score ?? '7.9',
+          imageSrc: details.image_url || '/images/placeholder.jpg',
+          year: details.year || '',
+          type: details.type || 'series',
+        })
+        idsFavorites.add(item.content_id)
+      }
     }
   }
 })
@@ -80,18 +93,22 @@ onMounted(async () => {
 
     <MediaSection
       v-if="searchQuery && searchResults.length > 0"
+      :infinite="false"
       title="Search results"
       :items="searchResults"
     />
+
     <template v-else>
       <MediaSection
         v-if="watchlistDetails.length > 0"
+        :infinite="false"
         title="My Watchlist"
         :items="watchlistDetails"
       />
       <MediaSection v-if="watchedDetails.length > 0" title="My Watched" :items="watchedDetails" />
       <MediaSection
         v-if="favoritesDetails.length > 0"
+        :infinite="false"
         title="My Favorites"
         :items="favoritesDetails"
       />

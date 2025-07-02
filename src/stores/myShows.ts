@@ -2,9 +2,9 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useMyShowsStore = defineStore('myShows', () => {
-  const watchlist = ref<string[]>([])
-  const watched = ref<string[]>([])
-  const favorites = ref<string[]>([])
+  const watchlist = ref<{ content_id: string; type: string }[]>([])
+  const watched = ref<{ content_id: string; type: string }[]>([])
+  const favorites = ref<{ content_id: string; type: string }[]>([])
   const loading = ref(false)
 
   // Cargar listas del backend
@@ -26,11 +26,11 @@ export const useMyShowsStore = defineStore('myShows', () => {
   }
 
   // Agregar show a una lista
-  async function addToList(userId: string, contentId: string, status: string) {
+  async function addToList(userId: string, contentId: string, status: string, type: string) {
     await fetch('http://localhost:3002/api/user-content', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, contentId, status })
+      body: JSON.stringify({ userId, contentId, status, type }),
     })
     await fetchLists(userId)
   }
@@ -40,7 +40,7 @@ export const useMyShowsStore = defineStore('myShows', () => {
     await fetch('http://localhost:3002/api/user-content', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, contentId, status })
+      body: JSON.stringify({ userId, contentId, status }),
     })
     await fetchLists(userId)
   }
@@ -52,6 +52,6 @@ export const useMyShowsStore = defineStore('myShows', () => {
     loading,
     fetchLists,
     addToList,
-    removeFromList
+    removeFromList,
   }
-}) 
+})

@@ -25,23 +25,23 @@ onMounted(async () => {
   loading.value = false
 })
 
-const inWatchlist = computed(() => store.watchlist.includes(showId))
-const inWatched = computed(() => store.watched.includes(showId))
-const inFavorites = computed(() => store.favorites.includes(showId))
+const inWatchlist = computed(() => store.watchlist.some((item) => item.content_id === showId))
+const inWatched = computed(() => store.watched.some((item) => item.content_id === showId))
+const inFavorites = computed(() => store.favorites.some((item) => item.content_id === showId))
 
 const toggleList = async (status: string) => {
   if (status === 'watchlist') {
     inWatchlist.value
       ? await store.removeFromList(String(userId), String(showId), 'watchlist')
-      : await store.addToList(String(userId), String(showId), 'watchlist')
+      : await store.addToList(String(userId), String(showId), 'watchlist', type)
   } else if (status === 'watched') {
     inWatched.value
       ? await store.removeFromList(String(userId), String(showId), 'watched')
-      : await store.addToList(String(userId), String(showId), 'watched')
+      : await store.addToList(String(userId), String(showId), 'watched', type)
   } else if (status === 'favorites') {
     inFavorites.value
       ? await store.removeFromList(String(userId), String(showId), 'favorites')
-      : await store.addToList(String(userId), String(showId), 'favorites')
+      : await store.addToList(String(userId), String(showId), 'favorites', type)
   }
 
   animatingStatus.value = status
