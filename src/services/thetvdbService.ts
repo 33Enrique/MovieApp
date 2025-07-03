@@ -7,6 +7,13 @@ export interface MediaItem {
   type: 'series' | 'movie'
 }
 
+// Servicio para interactuar con la API de TheTVDB
+
+/**
+ * Busca contenido (películas o series) en TheTVDB según el texto recibido.
+ * @param query Texto a buscar (nombre de la serie o película)
+ * @returns Resultados de la búsqueda
+ */
 export async function searchTheTVDB(query: string): Promise<MediaItem[]> {
   try {
     const tokenRes = await fetch('http://localhost:3002/api/thetvdb/token')
@@ -46,6 +53,12 @@ export async function searchTheTVDB(query: string): Promise<MediaItem[]> {
   }
 }
 
+/**
+ * Obtiene detalles de una película o serie específica desde TheTVDB.
+ * @param id ID del contenido
+ * @param type Tipo de contenido ('movie' o 'series')
+ * @returns Detalles del contenido
+ */
 export async function getShowDetails(
   id: string,
   type: 'series' | 'movie' = 'series',
@@ -80,6 +93,11 @@ export async function getShowDetails(
   }
 }
 
+/**
+ * Realiza una búsqueda exacta de varios títulos en TheTVDB.
+ * @param titles Array de títulos a buscar
+ * @returns Array de resultados exactos
+ */
 export async function batchSearchTheTVDBExact(titles: string[]): Promise<MediaItem[]> {
   try {
     const tokenRes = await fetch('http://localhost:3002/api/thetvdb/token')

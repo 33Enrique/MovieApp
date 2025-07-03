@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// Importa las dependencias necesarias de Vue y otros módulos
 import { ref, onMounted } from 'vue'
 import SearchBar from '../components/SearchBar.vue'
 import MediaSection from '../components/MediaSection.vue'
@@ -6,19 +7,25 @@ import { useMyShowsStore } from '@/stores/myShows'
 import { batchSearchTheTVDBExact, getShowDetails, type MediaItem } from '@/services/thetvdbService'
 import { useSearch } from '../composables/useSearch'
 
+// ID de usuario fijo para pruebas
 const userId = '14'
+// Acceso al store global de shows
 const store = useMyShowsStore()
 
+// Estados locales para detalles de las listas
 const watchlistDetails = ref<MediaItem[]>([])
 const watchedDetails = ref<MediaItem[]>([])
 const favoritesDetails = ref<MediaItem[]>([])
 
+// Hook de búsqueda reutilizable
 const { searchQuery, searchResults, isLoading, search } = useSearch()
 
+// Maneja el evento de búsqueda desde SearchBar
 const handleSearch = (query: string) => {
   search(query)
 }
 
+// Al montar el componente, carga las listas del usuario y sus detalles
 onMounted(async () => {
   await store.fetchLists(userId)
 
@@ -28,7 +35,6 @@ onMounted(async () => {
   favoritesDetails.value = []
 
   // Watchlist
-
   const idsWatchlist = new Set()
   for (const item of store.watchlist) {
     if (!idsWatchlist.has(item.content_id)) {
@@ -88,9 +94,12 @@ onMounted(async () => {
 </script>
 
 <template>
+  <!-- Contenedor principal de la vista de Mis Shows -->
   <div class="container">
+    <!-- Barra de búsqueda superior -->
     <SearchBar @search="handleSearch" />
 
+    <!-- Si hay resultados de búsqueda, muestra la sección de resultados -->
     <MediaSection
       v-if="searchQuery && searchResults.length > 0"
       :infinite="false"
@@ -98,6 +107,7 @@ onMounted(async () => {
       :items="searchResults"
     />
 
+    <!-- Si no hay búsqueda activa, muestra las listas personales -->
     <template v-else>
       <MediaSection
         v-if="watchlistDetails.length > 0"
@@ -117,6 +127,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+/* Estilos del contenedor principal */
 .container {
   padding: 20px;
   padding-bottom: 80px;

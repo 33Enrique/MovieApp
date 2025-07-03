@@ -1,3 +1,6 @@
+// Store de Pinia para gestionar las listas del usuario (watchlist, watched, favorites)
+// Permite acceder y modificar las listas desde cualquier parte de la app
+
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
