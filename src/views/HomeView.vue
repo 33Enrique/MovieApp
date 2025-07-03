@@ -16,36 +16,40 @@ const handleSearch = (query: string) => {
 }
 
 onMounted(async () => {
-  recommendedMovies.value = await batchSearchTheTVDBExact([
-    'Interstellar',
-    'Joker',
-    'Batman',
-    'Mugen Train',
-    'Ted',
-    'Project X',
-    'Spider Man',
-    'Venom',
-    'Rango',
-    'Scarface',
-    'World War Z',
-    'Ted 2',
-  ])
+  recommendedMovies.value = (
+    await batchSearchTheTVDBExact([
+      'Interstellar',
+      'Joker',
+      'Batman',
+      'Mugen Train',
+      'Ted',
+      'Project X',
+      'Spider Man',
+      'Venom',
+      'Rango',
+      'Scarface',
+      'World War Z',
+      'Ted 2',
+    ])
+  ).map((item) => ({ ...item, type: 'movie' as const }))
   console.log('Recommended movies:', recommendedMovies.value)
 
-  popularSeries.value = await batchSearchTheTVDBExact([
-    'Breaking Bad',
-    'Blue Lock',
-    'The Last of Us',
-    'Hunter x Hunter',
-    'You',
-    'Solo leveling',
-    'Wednesday',
-    'Death Note',
-    'Servant',
-    'Cobra Kai',
-    'Chernobyl',
-    'Tokyo Ghoul',
-  ])
+  popularSeries.value = (
+    await batchSearchTheTVDBExact([
+      'Breaking Bad',
+      'The Boys',
+      'The Last of Us',
+      'The Walking Dead',
+      'You',
+      'The Bear',
+      'Wednesday',
+      'Death Note',
+      'Servant',
+      'Cobra Kai',
+      'Chernobyl',
+      'Tokyo Ghoul',
+    ])
+  ).map((item) => ({ ...item, type: 'series' as const }))
   console.log('Popular series:', popularSeries.value)
 })
 </script>

@@ -40,7 +40,7 @@ onMounted(async () => {
           rating: details.score ?? '7.9',
           imageSrc: details.image_url || '/images/placeholder.jpg',
           year: details.year || '',
-          type: details.type || 'series',
+          type: item.type as 'series' | 'movie',
         })
         idsWatchlist.add(item.content_id)
       }
@@ -59,7 +59,7 @@ onMounted(async () => {
           rating: details.score ?? '7.9',
           imageSrc: details.image_url || '/images/placeholder.jpg',
           year: details.year || '',
-          type: details.type || 'series',
+          type: item.type as 'series' | 'movie',
         })
         idsWatched.add(item.content_id)
       }
@@ -78,7 +78,7 @@ onMounted(async () => {
           rating: details.score ?? '7.9',
           imageSrc: details.image_url || '/images/placeholder.jpg',
           year: details.year || '',
-          type: details.type || 'series',
+          type: item.type as 'series' | 'movie',
         })
         idsFavorites.add(item.content_id)
       }

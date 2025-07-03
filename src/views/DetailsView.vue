@@ -7,9 +7,13 @@ import { useMyShowsStore } from '@/stores/myShows'
 const route = useRoute()
 const router = useRouter()
 const rawId = route.params.id as string
-const [typePrefix, idStr] = rawId.split('-')
-const type = typePrefix === 'movie' ? 'movie' : 'series'
-const showId = idStr
+let type = 'series'
+let showId = rawId
+if (rawId.includes('-')) {
+  const [typePrefix, idStr] = rawId.split('-')
+  type = typePrefix === 'movie' ? 'movie' : 'series'
+  showId = idStr
+}
 
 const show = ref<any>(null)
 const userId = 14
@@ -20,7 +24,7 @@ const animatingStatus = ref<string | null>(null)
 
 onMounted(async () => {
   loading.value = true
-  show.value = await getShowDetails(String(showId), type)
+  show.value = await getShowDetails(String(showId), type as 'series' | 'movie')
   await store.fetchLists(String(userId))
   loading.value = false
 })

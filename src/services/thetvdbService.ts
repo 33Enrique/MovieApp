@@ -30,7 +30,10 @@ export async function searchTheTVDB(query: string): Promise<MediaItem[]> {
     return data.data
       .filter((item: any) => item?.objectID && item?.name)
       .map((item: any) => ({
-        id: item.objectID,
+        id:
+          typeof item.objectID === 'string' && item.objectID.includes('-')
+            ? item.objectID.split('-').pop()
+            : item.objectID,
         title: item.name,
         rating: item.score?.toFixed(1) ?? '7.9',
         imageSrc: item.image_url || '/images/placeholder.jpg',
@@ -91,7 +94,10 @@ export async function batchSearchTheTVDBExact(titles: string[]): Promise<MediaIt
           const first = data.data?.[0]
           return first
             ? {
-                id: first.objectID,
+                id:
+                  typeof first.objectID === 'string' && first.objectID.includes('-')
+                    ? first.objectID.split('-').pop()
+                    : first.objectID,
                 title: first.name,
                 rating: first.score?.toFixed(1) ?? '7.9',
                 imageSrc: first.image_url || '/images/placeholder.jpg',

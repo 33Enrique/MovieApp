@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`/details/${id}`" class="card">
+  <router-link :to="`/details/${type}-${id}`" class="card">
     <div class="rating">{{ '7.9' }}</div>
     <img :src="imageSrc" :alt="title" />
     <p class="title">{{ title }}</p>
@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   id: string | number
   rating: string | number
   imageSrc: string
@@ -16,6 +16,7 @@ defineProps<{
   year: string | number
   type: 'series' | 'movie'
 }>()
+console.log('MediaCard', { id: props.id, type: props.type, title: props.title })
 </script>
 
 <style scoped>
